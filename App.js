@@ -7,7 +7,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import { Colors } from "./constants/styles";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,9 +41,14 @@ function AuthenticatedStack() {
 }
 
 function Navigation() {
+  const isAuthenticated = useSelector((store) => store.user.isAuthenticated);
+  const content = isAuthenticated ? < AuthenticatedStack /> : <AuthStack />
+
+
   return (
     <NavigationContainer>
-      <AuthStack />
+      {/* <AuthStack /> */}
+      {content}
     </NavigationContainer>
   );
 }

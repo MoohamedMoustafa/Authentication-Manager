@@ -3,16 +3,21 @@ import AuthContent from "../components/auth/AuthContent";
 import { useSignupMutation } from "../services/authService";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
 import { Alert } from "react-native";
+import { useDispatch } from "react-redux";
+import { loginLocal } from "../store/userSlice";
 
 function SignupScreen() {
   const [signup, { error, isLoading }] = useSignupMutation();
+  const dispatch = useDispatch();
   async function submitHandler(credentials) {
     try {
-      const res = signup(credentials).unwrap();
-      if (res.error.data.error.message === "EMAIL_EXISTS") {
+      // login returns the is directely in res.data ====> handeled in transformResponse
+      const res = await signup(credentials);
+      dispatch(loginLocal(res.data));
+      if (res.error.message === "EMAIL_EXISTS") {
         throw new Error("this email is already registered");
       }
-      if (res.error.data.error.message === "INVALID_EMAIL") {
+      if (res.error.message === "INVALID_EMAIL") {
         throw new Error("this email is not valid");
       }
     } catch (error) {

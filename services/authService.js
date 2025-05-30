@@ -13,24 +13,32 @@ export const authService = createApi({
       query: (credentials) => ({
         url: `${SIGNUP}${API_KEY}`,
         method: "POST",
-        body: {...credentials, returnSecureToken: true},
+        body: { ...credentials, returnSecureToken: true },
         headers: {
           "Content-Type": "application/json",
         },
+      }),
+      transformErrorResponse: (res) => ({
+        message: res.data?.error?.message || "unknown error occured",
+        code: res.data?.error?.code || 400,
       }),
     }),
     login: builder.mutation({
       query: (credentials) => ({
         url: `${LOGIN}${API_KEY}`,
         method: "POST",
-        body: {...credentials, returnSecureToken: true},
+        body: { ...credentials, returnSecureToken: true },
         headers: {
           "Content-Type": "application/json",
         },
-      })
-    })
+      }),
+      transformErrorResponse: (res) => ({
+        message: res.data?.error?.message || "unknown error occured",
+        code: res.data?.error?.code || 400,
+      }),
+      transformResponse: (res) => res.idToken,
+    }),
   }),
 });
 
-
-export const {useSignupMutation, useLoginMutation} = authService;
+export const { useSignupMutation, useLoginMutation } = authService;
