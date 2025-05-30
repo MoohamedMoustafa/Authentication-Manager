@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const BASE_URL = "https://identitytoolkit.googleapis.com/v1/accounts";
+const API_KEY = "AIzaSyBMmU8m5Sq5dw5kAKqniX0daYjncgDBLe0";
 const SIGNUP = ":signUp?key=";
 const LOGIN = ":signInWithPassword?key=";
-const API_KEY = "AIzaSyBMmU8m5Sq5dw5kAKqniX0daYjncgDBLe0";
 export const authService = createApi({
   reducerPath: "authService",
   baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}` }),
@@ -19,8 +19,18 @@ export const authService = createApi({
         },
       }),
     }),
+    login: builder.mutation({
+      query: (credentials) => ({
+        url: `${LOGIN}${API_KEY}`,
+        method: "POST",
+        body: {...credentials, returnSecureToken: true},
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    })
   }),
 });
 
 
-export const {useSignupMutation} = authService;
+export const {useSignupMutation, useLoginMutation} = authService;
