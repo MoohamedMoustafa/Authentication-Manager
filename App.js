@@ -1,14 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { loginLocal } from "./store/userSlice";
 
 import store from "./store/store";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import { Colors } from "./constants/styles";
-import { Provider, useSelector } from "react-redux";
-import IconButton from "./components/UI/IconButton";
+import LoadingOverlay from "./components/UI/LoadingOverlay";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +45,25 @@ function AuthenticatedStack() {
 }
 
 function Navigation() {
+  const [isloading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((store) => store.user.isAuthenticated);
+  useEffect(() => {
+    async function checkToken() {
+      const storedToken = await AsyncStorage.getItem("userToken");
+      if (storedToken) {
+        dispatch(loginLocal(storedToken));
+      }
+      setIsLoading(false);
+    }
+    checkToken();
+  }, [dispatch]);
+
+  if(isloading) {
+    return <LoadingOverlay message="Checking data..." />
+  }
+
+
   const content = isAuthenticated ? <AuthenticatedStack /> : <AuthStack />;
 
   return (
