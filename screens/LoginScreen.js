@@ -13,9 +13,7 @@ function LoginScreen() {
     try {
       // login returns the is directely in res.data ====> handeled in transformResponse
       const res = await login(credentials);
-      dispatch(loginLocal(res.data));
-
-      
+      // dispatch(loginLocal(res.data));
       if (res.error?.message === "EMAIL_NOT_FOUND") {
         throw new Error("this email is not registered");
       }

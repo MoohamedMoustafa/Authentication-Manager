@@ -13,7 +13,7 @@ function SignupScreen() {
     try {
       // login returns the is directely in res.data ====> handeled in transformResponse
       const res = await signup(credentials);
-      dispatch(loginLocal(res.data));
+      // dispatch(loginLocal(res.data));
       if (res.error.message === "EMAIL_EXISTS") {
         throw new Error("this email is already registered");
       }

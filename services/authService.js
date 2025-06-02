@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { loginLocal } from "../store/userSlice";
 
 const BASE_URL = "https://identitytoolkit.googleapis.com/v1/accounts";
 const API_KEY = "AIzaSyBMmU8m5Sq5dw5kAKqniX0daYjncgDBLe0";
@@ -18,6 +19,16 @@ export const authService = createApi({
           "Content-Type": "application/json",
         },
       }),
+      async onQueryStarted(args, {dispatch, queryFulfilled}){
+        try {
+          const {data} = await queryFulfilled;
+          dispatch(loginLocal(data));
+        } catch (error) {
+          console.log("error in signup query", error);
+          
+        }
+      },
+
       transformErrorResponse: (res) => ({
         message: res.data?.error?.message || "unknown error occured",
         code: res.data?.error?.code || 400,
@@ -32,6 +43,14 @@ export const authService = createApi({
           "Content-Type": "application/json",
         },
       }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const {data} = await queryFulfilled;
+          dispatch(loginLocal(data))
+        } catch (error) {
+          console.log("error in login query", error);
+        }
+      },
       transformErrorResponse: (res) => ({
         message: res.data?.error?.message || "unknown error occured",
         code: res.data?.error?.code || 400,
